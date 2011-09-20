@@ -29,7 +29,7 @@ void dirwalk(char *dir, void (*fcn)(char *))
 		}
 		else
 		{
-			sprintf(name, "%s %s", dir, dp->d_name);
+			sprintf(name, "%s/%s", dir, dp->d_name);
 			(*fcn)(name);
 		}
 	}
@@ -39,8 +39,11 @@ void dirwalk(char *dir, void (*fcn)(char *))
 void fsize(char *name)
 {
 	struct stat stbuf;
-
-	if (stat(name, &stbuf) == -1)
+/*注意此处使用的lstat与stat区别*/
+/*若为软链接 则使用stat 会使程序成为死循环*/
+/*而lstat 不跟踪软链接 故不会造成死循环*/
+//	if (stat(name, &stbuf) == -1)
+	if (lstat(name, &stbuf) == -1)
 	{
 		fprintf(stderr, "fsize: can't access %s\n", name);
 		return;
