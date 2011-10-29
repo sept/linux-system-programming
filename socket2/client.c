@@ -9,14 +9,14 @@
 
 #define SERV_PORT 8000
 #define MAX 1024
-#define ping_ip 192.168.1.30
+#define ping_ip 192.168.116.166
 
 int main(int argc, const char *argv[])
 {
 	char buf[MAX];
 	char str[MAX];
 	struct sockaddr_in ser_addr;
-	int sockfd, n, i = 4;
+	int sockfd, n, i = 1;
 
 	sockfd = socket(AF_INET,SOCK_STREAM,0);
 	bzero(&ser_addr,sizeof(ser_addr));
@@ -24,16 +24,16 @@ int main(int argc, const char *argv[])
 	inet_pton(AF_INET,"ping_ip",&ser_addr.sin_addr);
 	ser_addr.sin_port = htons(SERV_PORT);
 
-	Connect(sockfd,(struct sockaddr *)&ser_addr, sizeof(ser_addr));
-	while (i--)
+	connect(sockfd,(struct sockaddr *)&ser_addr, sizeof(ser_addr));
+	while (i)
 	{
 		fgets(buf, sizeof(buf), stdin);
-		Write(sockfd,buf,strlen(buf));
-		n = Read(sockfd, str, sizeof(str));
-		Write(STDOUT_FILENO, str, n);
+		write(sockfd,buf,strlen(buf));
+		n = read(sockfd, str, sizeof(str));
+		write(STDOUT_FILENO, str, n);
 		bzero(str, sizeof(str));
 	}
-	Close(sockfd);
+	close(sockfd);
 
 	return 0;
-
+}
